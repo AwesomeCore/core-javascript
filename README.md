@@ -13,24 +13,53 @@ Awesome Event Oriented Javascript Framework
 
 ```javascript
   var Object = {
-    ExampleEvent: new Core.EventPoint()
+      FirstExampleEvent : new Core.EventPoint()
+    , SecondExampleEvent: new Core.EventPoint()
   }
 ```
 
 ###Fireing
+
 ```javascript
   var FireObject = {
     fireEvent: function() {
-      new Object.ExamplaEvent({param1: 'param1'});
+      new Object.FirstExampleEvent({param1: 'param1'});
+      new Object.SecondExampleEvent();
     }
   }
 ```
 ###Catching
+
+####Single Event Catching
 ```javascript
 var CatchObject = {
   onEvent: function() {
-    var event = Core.CatchEvent(Object.ExampleEvent);
+    var event = Core.CatchEvent(Object.FirstExampleEvent);
     
-    // event = { param1: 'param1' }
+    // event == { param1: 'param1' }
   }
 }
+```
+
+####Multiple Event Catching
+```javascript
+var CatchObject = {
+  onEvent: function() {
+    var event = Core.CatchEvent(Object.FirstExampleEvent, Object.SecondExampleEvent);
+    
+    if( event instanceof Object.FirstExampleEvent ) {
+      // event == { param1: 'param1' }
+    } else {
+      //
+    }
+    
+    
+  }
+}
+```
+
+
+
+
+
+
