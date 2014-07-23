@@ -18,7 +18,7 @@ Awesome Event Oriented Javascript Framework
   }
 ```
 
-###Fireing
+###Firing
 
 ```javascript
   var FireObject = {
