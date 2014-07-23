@@ -53,8 +53,6 @@ var CatchObject = {
     } else {
       //
     }
-    
-    
   }
 }
 ```
@@ -74,7 +72,9 @@ var CatchObject = {
 ```javascript
   var FireObject = {
     fireRequest: function() {
-      new Object.ExampleRequest({param1: 'param1'});
+      new Object.ExampleRequest({param1: 'param1'}, function(data) {
+        console.log(data);
+      });
     }
   }
 ```
@@ -93,7 +93,3 @@ var CatchObject = {
   }
 }
 ```
-
-
-
-
