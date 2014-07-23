@@ -8,6 +8,7 @@ Awesome Event Oriented Javascript Framework
 #API
 
 ##Events
+Event is a complex event model. 
 
 ###Initialization
 
@@ -58,7 +59,40 @@ var CatchObject = {
 }
 ```
 
+##Requests
 
+###Initialization
+
+```javascript
+  var Object = {
+      ExampleRequest: new Core.RequestPoint()
+  }
+```
+
+###Firing
+
+```javascript
+  var FireObject = {
+    fireRequest: function() {
+      new Object.ExampleRequest({param1: 'param1'});
+    }
+  }
+```
+###Catching
+
+```javascript
+var CatchObject = {
+  onRequest: function() {
+    var request = Core.CatchRequest(Object.ExampleRequest);
+    
+    return function(success) {
+      //code here
+      var data = { answer: 'answer to request', params: request.param1};
+      success(data);
+    }
+  }
+}
+```
 
 
 
