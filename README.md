@@ -117,14 +117,13 @@ var CatchObject = {
 
 ###Examples
 ####Initialization
-
-When the object has been inited, its state goes to the first value of the set.
-
 ```javascript
  var Object = {
    mainState: Core.state('Idle', 'Running', 'Stopped')
  }
 ```
+When the object has been inited, its state goes to the first value of the set.
+
 
 ####Changing State
 ```javascript
