@@ -53,7 +53,7 @@ Here we show, how you can fire it and pass some data with It.
 The main twist is that you can catch the fired Event at any spaces of your code.
 So this can cut your code several times.
 
-####Single Event Catching
+#####Single Event Catching
 ```javascript
 var CatchObject = {
   onEvent: function() {
@@ -64,7 +64,7 @@ var CatchObject = {
 }
 ```
 
-####Multiple Event Catching
+#####Multiple Event Catching
 ```javascript
 var CatchObject = {
   onEvent: function() {
