@@ -39,7 +39,7 @@ In this step we create Event object.
   }
 ```
 
-###Firing
+####Firing
 Here we show, how you can fire it and pass some data with It.
 ```javascript
   var FireObject = {
@@ -49,7 +49,7 @@ Here we show, how you can fire it and pass some data with It.
     }
   }
 ```
-###Catching
+####Catching
 The main twist is that you can catch the fired Event at any spaces of your code.
 So this can cut your code several times.
 
