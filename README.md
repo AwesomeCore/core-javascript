@@ -137,7 +137,7 @@ When state has been changed, the Event `Object.mainState.GoRunning` fires. And i
   getState: function() {
     Core.CatchEvent(Object.mainState.GoRunning, Object.mainState.GoStopped);
     
-    if( Object.mainState.value == 'Running' ) {
+    if( Object.mainState.value === 'Running' ) {
       // your code here
     }
   }
