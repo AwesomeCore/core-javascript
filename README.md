@@ -8,30 +8,15 @@ Awesome Event Oriented Javascript Framework
 #API
 
 ##Events
-Event is a complex event model. 
-
 ###Description
 Event is a complex event object, that means, that something has already happend.
 There are three steps for using them: creation, firing, catching.
 
 Also you can pass some data with Event.
 
-####Usage
-```javascript
-  Event = new Core.EventPoint()
-  new Event(params)
-```
-
-####Params
-```javascript
-    (String) params | (Object) params
-```
-
-
 ###Example
 ####Initialization
 In this step we create Event object.
-
 ```javascript
   var Object = {
       FirstExampleEvent : new Core.EventPoint()
@@ -80,17 +65,22 @@ var CatchObject = {
 ```
 
 ##Requests
+###Description
+Request is a complex object that means that something asks to perform its request.
+There are three steps for using them: creation, firing, catching.
 
-###Initialization
-
+Also you can pass some data with the Request.
+###Example
+####Initialization
+Just create Request object.
 ```javascript
   var Object = {
       ExampleRequest: new Core.RequestPoint()
   }
 ```
 
-###Firing
-
+####Firing
+Fire it and ask something to perform your request.
 ```javascript
   var FireObject = {
     fireRequest: function() {
@@ -100,8 +90,9 @@ var CatchObject = {
     }
   }
 ```
-###Catching
 
+####Catching
+Catch the Request and perform it.
 ```javascript
 var CatchObject = {
   onRequest: function() {
