@@ -93,3 +93,54 @@ var CatchObject = {
   }
 }
 ```
+
+##States
+
+###Description
+####Usage
+```javascript
+ Core.state(state1, state2, ...)
+```
+
+####Params
+```javascript
+  (String) '' // name of the state
+```
+
+####Returns
+```javascript
+ (Object) {
+    value: (String)    // current state value
+  , go   : (Function)  // method to change state
+ }
+```
+
+###Examples
+####Initialization
+
+When the object has been inited, its state goes to the first value of the set.
+
+```javascript
+ var Object = {
+   mainState: Core.state('Idle', 'Running', 'Stopped')
+ }
+```
+
+####Changing State
+```javascript
+  Object.mainState.go('Running');
+```
+
+When state has been changed, the Event Object.mainState.GoRunning fires. And it can be catched at any space of the application.
+
+```javascript
+ var MiddleObject = {
+  getState: function() {
+    Core.CatchEvent(Object.mainState.GoRunning, Object.mainState.GoStopped);
+    
+    if( Object.mainState.value == 'Running' ) {
+      // your code here
+    }
+  }
+ }
+```
