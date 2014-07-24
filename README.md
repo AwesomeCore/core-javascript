@@ -10,7 +10,27 @@ Awesome Event Oriented Javascript Framework
 ##Events
 Event is a complex event model. 
 
-###Initialization
+###Description
+Event is a complex event object, that means, that something has already happend.
+There are three steps for using them: creation, firing, catching.
+
+Also you can pass some data with Event.
+
+####Usage
+```javascript
+  Event = new Core.EventPoint()
+  new Event(params)
+```
+
+####Params
+```javascript
+    (String) params | (Object) params
+```
+
+
+###Example
+####Initialization
+In this step we create Event object.
 
 ```javascript
   var Object = {
@@ -20,7 +40,7 @@ Event is a complex event model.
 ```
 
 ###Firing
-
+Here we show, how you can fire it and pass some data with It.
 ```javascript
   var FireObject = {
     fireEvent: function() {
@@ -30,6 +50,8 @@ Event is a complex event model.
   }
 ```
 ###Catching
+The main twist is that you can catch the fired Event at any spaces of your code.
+So this can cut your code several times.
 
 ####Single Event Catching
 ```javascript
