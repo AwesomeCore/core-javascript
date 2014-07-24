@@ -130,7 +130,7 @@ When the object has been inited, its state goes to the first value of the set.
   Object.mainState.go('Running');
 ```
 
-When state has been changed, the Event Object.mainState.GoRunning fires. And it can be catched at any space of the application.
+When state has been changed, the Event `Object.mainState.GoRunning` fires. And it can be catched at any space of the application.
 
 ```javascript
  var MiddleObject = {
