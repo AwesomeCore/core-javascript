@@ -18,19 +18,23 @@ Also you can pass some data with Event.
 ####Initialization
 In this step we create Event object.
 ```javascript
-  var Object = {
-      FirstExampleEvent : new Core.EventPoint()
-    , SecondExampleEvent: new Core.EventPoint()
-  }
+  Core.registerEventPoint('Player_Started');
+  Core.registerEventPoint('Player_Paused');
+  Core.registerEventPoint('Player_Inited');
 ```
 
 ####Firing
 Here we show, how you can fire it and pass some data with It.
 ```javascript
-  var FireObject = {
-    fireEvent: function() {
-      new Object.FirstExampleEvent({param1: 'param1'});
-      new Object.SecondExampleEvent();
+  var Player = {
+      mediaTag: document.getElementById('audio')
+    , start: function() {
+      this.mediaTag.play();
+      FireEvent(new Player_Started());
+    }
+    , pause: function() {
+      this.mediaTag.pause();
+      FireEvent(new Player_Paused({currentTime: this.mediaTag.currentTime}));
     }
   }
 ```
