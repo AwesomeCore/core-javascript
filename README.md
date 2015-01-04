@@ -42,28 +42,27 @@ Here we show, how you can fire it and pass some data with It.
 The main twist is that you can catch the fired Event at any spaces of your code.
 So this can cut your code several times.
 
+Event subscription is a static process. Before loading Core parse objects and added to all events thier's listeners.
+Also you can dinamically subscribe to the event. It is useful in different cases, for example, in angular directives.
+
 #####Single Event Catching
 ```javascript
-var CatchObject = {
-  onEvent: function() {
-    var event = Core.CatchEvent(Object.FirstExampleEvent);
+var GoogleTrackingObject = {
+  sendPlayerEvent: function() {
+    var event = CatchEvent(Player_Started);
     
-    // event == { param1: 'param1' }
+    ga('send', 'event', 'player', 'start');
   }
 }
 ```
 
 #####Multiple Event Catching
 ```javascript
-var CatchObject = {
-  onEvent: function() {
-    var event = Core.CatchEvent(Object.FirstExampleEvent, Object.SecondExampleEvent);
+var GoogleTrackingObject = {
+  sendPlayerEvents: function() {
+    var event = CatchEvent(Player_Started, Player_Paused);
     
-    if( event instanceof Object.FirstExampleEvent ) {
-      // event == { param1: 'param1' }
-    } else {
-      //
-    }
+    ga('send', 'event', 'player', 'start');
   }
 }
 ```
