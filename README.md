@@ -3,46 +3,49 @@ CoreJS
 
 Awesome Event Oriented Javascript Framework
 
+This framework provide us with new principles of the design of the code. The main idea is that the hole project is a set of modules. Every module has it's own objects. Some objects may have Events and Requests.
+
+Event is a complex object, that means that something has already happend.
+Request is a complex object, that means that something asks to perform its request.
+
+Other objects of the system can subscribe on Events and Requests. Subscription is a static process.
+During initialization Core parses project and subscribes objects on Events and Requests.
+
 #Installing
 
 #API
 
 ##Events
 ###Description
-Event is a complex event object, that means, that something has already happend.
-There are three steps for using them: creation, firing, catching.
+There are three steps for using Events: creation, firing, catching.
 
 Also you can pass some data with Event.
 
 ###Example
 ####Initialization
-In this step we create Event object.
+To initialize Event object call `Core.registerEventPoint` with Event name. Event name consists of Object name that has this Event and action name.
 ```javascript
   Core.registerEventPoint('Player_Started');
-  Core.registerEventPoint('Player_Paused');
-  Core.registerEventPoint('Player_Inited');
 ```
 
 ####Firing
-Here we show, how you can fire it and pass some data with It.
+To fire Event call `FireEvent` function with created Event.
 ```javascript
   var Player = {
       mediaTag: document.getElementById('audio')
+
     , start: function() {
       this.mediaTag.play();
+      
       FireEvent(new Player_Started());
-    }
-    , pause: function() {
-      this.mediaTag.pause();
-      FireEvent(new Player_Paused({currentTime: this.mediaTag.currentTime}));
     }
   }
 ```
+
 ####Catching
 The main twist is that you can catch the fired Event at any spaces of your code.
 So this can cut your code several times.
 
-Event subscription is a static process. Before loading Core parse objects and added to all events thier's listeners.
 Also you can dinamically subscribe to the event. It is useful in different cases, for example, in angular directives.
 
 #####Single Event Catching
@@ -62,14 +65,13 @@ var GoogleTrackingObject = {
   sendPlayerEvents: function() {
     var event = CatchEvent(Player_Started, Player_Paused);
     
-    ga('send', 'event', 'player', 'start');
+    ga('send', 'event', 'player', 'player_event');
   }
 }
 ```
 
 ##Requests
 ###Description
-Request is a complex object that means that something asks to perform its request.
 There are three steps for using them: creation, firing, catching.
 
 Also you can pass some data with the Request.
@@ -77,19 +79,20 @@ Also you can pass some data with the Request.
 ####Initialization
 Just create Request object.
 ```javascript
-  var Object = {
-      ExampleRequest: new Core.RequestPoint()
-  }
+  Core.registerRequestPoint('PlayerUI_StartRequest')
 ```
 
 ####Firing
 Fire it and ask something to perform your request.
 ```javascript
-  var FireObject = {
-    fireRequest: function() {
-      new Object.ExampleRequest({param1: 'param1'}, function(data) {
-        console.log(data);
-      });
+  var PlayerUi = {
+    startPlaying: function() {
+      FireRequest(
+          new PlayerUI_StartRequest()
+        , function() {} // success callback
+        , function() {} // error callback
+        , {} // context
+      )
     }
   }
 ```
@@ -97,14 +100,45 @@ Fire it and ask something to perform your request.
 ####Catching
 Catch the Request and perform it.
 ```javascript
-var CatchObject = {
-  onRequest: function() {
-    var request = Core.CatchRequest(Object.ExampleRequest);
+var PlayerAudio = {
+  startPlaying: function() {
+    CatchRequest(PlayerUI_StartRequest);
     
-    return function(success) {
-      //code here
-      var data = { answer: 'answer to request', params: request.param1};
-      success(data);
+    return function(cb, eb) {
+      /* start playing audio player logic */
+      cb();
+    }
+  }
+}
+```
+
+There can be several objects that can resolve Requests. When one of them can't process Request it call error callback function and next object start processing.
+
+```javascript
+var PlayerAudio = {
+    mediaTag: null
+  
+  , startPlaying: function() {
+    CatchRequest(PlayerUI_StartRequest);
+    
+    return function(cb, eb) {
+      if( !PlayerAudio.mediaTag ) {
+        return eb();
+      }
+      
+      /* start playing audio player logic */
+      cb();
+    }
+  }
+}
+
+var Player = {
+  start: function() {
+    CatchRequest(PlayerUI_StartRequest);
+    
+    return function(cb, eb) {
+      /* start playing audio player logic */
+      cb();
     }
   }
 }
