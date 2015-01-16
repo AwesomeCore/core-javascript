@@ -17,9 +17,8 @@ During initialization Core parses project and subscribes objects on Events and R
 
 ##Events
 ###Description
-There are three steps for using Events: creation, firing, catching.
-
-Also you can pass some data with Event.
+There are three steps for using Events: initialization, firing, catching.
+You can pass some data with Event.
 
 ###Example
 ####Initialization
@@ -37,7 +36,7 @@ To fire Event call `FireEvent` function with created Event.
     , start: function() {
       this.mediaTag.play();
       
-      FireEvent(new Player_Started());
+      FireEvent(new Player_Started({data: 'some-data'}));
     }
   }
 ```
@@ -53,6 +52,8 @@ Also you can dinamically subscribe to the event. It is useful in different cases
 var GoogleTrackingObject = {
   sendPlayerEvent: function() {
     var event = CatchEvent(Player_Started);
+    
+    /* event.data === 'some-data'  //true    */
     
     ga('send', 'event', 'player', 'start');
   }
@@ -72,9 +73,9 @@ var GoogleTrackingObject = {
 
 ##Requests
 ###Description
-There are three steps for using them: creation, firing, catching.
+There are three steps for using them: initialization, firing, catching.
+You can pass some data with the Request.
 
-Also you can pass some data with the Request.
 ###Example
 ####Initialization
 Just create Request object.
@@ -88,7 +89,7 @@ Fire it and ask something to perform your request.
   var PlayerUi = {
     startPlaying: function() {
       FireRequest(
-          new PlayerUI_StartRequest()
+          new PlayerUI_StartRequest({data: 'some-data'})
         , function() {} // success callback
         , function() {} // error callback
         , {} // context
@@ -102,7 +103,9 @@ Catch the Request and perform it.
 ```javascript
 var PlayerAudio = {
   startPlaying: function() {
-    CatchRequest(PlayerUI_StartRequest);
+    var request = CatchRequest(PlayerUI_StartRequest);
+    
+    /* request.data === 'some-data'  //true    */
     
     return function(cb, eb) {
       /* start playing audio player logic */
