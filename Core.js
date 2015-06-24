@@ -219,27 +219,27 @@ Core = {
 
         var _this = request;
 
-        _this._cb      = cb;
-        _this._fail_cb = fail_cb;
+        _this.__proto__._cb      = cb;
+        _this.__proto__._fail_cb = fail_cb;
 
-        if(!_this._started) {
-            _this._started = true;
+        if(!_this.__proto__._started) {
+            _this.__proto__._started = true;
             if(global[_this._request + '_Start']) {
                 var StartEvent = new global[_this._request + '_Start']();
-                StartEvent.__proto__ = {__proto__: StartEvent.__proto__, request: _this}
+                StartEvent.__proto__ = {__proto__: StartEvent.__proto__, request: _this};
                 FireEvent(StartEvent)
             }
         }
 
         var methods = [];
 
-        var handlers = [], listeners = request.constructor.listeners;
+        var listeners = request.constructor.listeners;
         for(var i in listeners) {
             Core.__event_stack.unshift(_this);
             try {
                 var handler = listeners[i][0][listeners[i][1]](listeners[i][2]);
                 if(handler) {
-                    handlers.push([listeners[i][1], handler]);
+                    request._handlers.push([listeners[i][1], handler]);
                 }
             } catch (e) {
                 console.log(e.message);
@@ -256,12 +256,10 @@ Core = {
 
         this._contexts.shift(context);
 
-        var handlers_results = [];
-
-        function run_handler() {
-            var handler = handlers.shift();
+        function run_handler(i) {
+            var handler = request._handlers[i];
             if(handler) {
-                handlers_results.push(handler[0]);
+                request._handlers_results.push(handler[0]);
                 handler[1](function(result) {
                     var data = {
                         result: result
@@ -271,41 +269,41 @@ Core = {
                         data._reqid = _this._reqid
                     }
                     if(!_this._handled) {
-                        _this._handled = true;
+                        _this.__proto__._handled = true;
 
                         var SuccessEvent = new global[request._request + '_Success'](data);
                         SuccessEvent.__proto__ = {__proto__: SuccessEvent.__proto__, request: request};
                         FireEvent(SuccessEvent);
                     }
 
-                    handlers_results.push(result);
+                    request._handlers_results.push(result);
 
-                    _this._cb && _this._cb(result);
-                }, handler.name != 'success' ? run_handler: new Function);
+                    _this.__proto__._cb && _this.__proto__._cb(result);
+                }, handler.name != 'success' ? function(){ run_handler(i + 1) } : new Function);
             } else {
                 var data = {};
                 if(_this._reqid) {
                     data._reqid = _this._reqid
                 }
                 if(!_this._handled) {
-                    _this._handled = true;
+                    _this.__proto__._handled = true;
                     var FailEvent = new global[request._request + '_Fail'](data);
                     FailEvent.__proto__ = {__proto__: FailEvent.__proto__, request: request};
                     FireEvent(FailEvent);
                 }
-                _this._fail_cb instanceof Function && _this._fail_cb();
+                _this.__proto__._fail_cb instanceof Function && _this.__proto__._fail_cb();
             }
         }
 
         if(cb || fail_cb) {
-            run_handler()
+            run_handler(0)
         } else {
-            _this._run_handler = run_handler;
-            run_handler()
+            //_this._run_handler = run_handler;
+            run_handler(0)
         }
 
         if(!request.constructor.options || request.constructor.options.log !== false) {
-            Core.log.push(handlers_results);
+            Core.log.push(request._handlers_results);
         }
     }
     , contextMatches: function checkRecursive(context, pattern) {
@@ -361,6 +359,7 @@ Core = {
         eval('var requestConstructor = function ' + name + '(data) { \n' +
         '   Core._clone(data, this); \n' +
         '   this._request = ' + name + '._request; \n' +
+        '   this.__proto__ = {__proto__: this.__proto__, _handlers: [], _handlers_results: [], _cb: null, _fail_cb: null, _started: false, _handled: false} \n' +
         '}');
 
         requestConstructor.prototype = {__proto__: options && options.parent || Core.RequestPoint.prototype, constructor: requestConstructor};
@@ -551,6 +550,10 @@ Core = {
     }
 };
 
+Core.RequestPoint.prototype.addHandler = function addHandler(handler) {
+    this._handlers.push(addHandler.caller, handler);
+};
+
 if(typeof window != 'undefined') {
 
     /** @name DOM_Init */
@@ -644,9 +647,13 @@ if(typeof require != 'undefined') {
     module.exports = Core;
 }
 
-CatchEvent = function(){ return Core.CatchEvent.apply(Core, arguments); };
+//global.after = function after() {
+//    return {_check: 'after', values: Array.prototype.slice.apply(arguments)}
+//};
+
+CatchEvent   = function(){ return Core.CatchEvent  .apply(Core, arguments); };
 CatchRequest = function(){ return Core.CatchRequest.apply(Core, arguments); };
-FireRequest = function(){ return Core.FireRequest.apply(Core, arguments); };
-FireEvent = function(){ return Core.FireEvent.apply(Core, arguments); };
-EventPoint = Core.EventPoint;
+FireRequest  = function(){ return Core.FireRequest .apply(Core, arguments); };
+FireEvent    = function(){ return Core.FireEvent   .apply(Core, arguments); };
+EventPoint   = Core.EventPoint;
 
