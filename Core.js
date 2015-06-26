@@ -147,7 +147,7 @@ Core = {
                 methods.push(handler[1])
             } catch (e) {
                 methods.push('error: ', handler[1]);
-                console.error(event, handler[1], [e.stack ? e.message : e, e.stack ? e.stack.split("\n").slice(2).join("\n") : 'no stack provided']);
+                setImmediate(function() { throw e });
             }
 
             Core.__event_stack.shift();
@@ -242,10 +242,7 @@ Core = {
                     request._handlers.push([listeners[i][1], handler]);
                 }
             } catch (e) {
-                console.log(e.message);
-                if(e.stack) {
-                    console.log(this.getStack(e));
-                }
+                setImmediate(function() {throw e});
             }
             Core.__event_stack.shift();
         }
@@ -421,11 +418,7 @@ Core = {
                 }
             }
             if(_class.Init) {
-                try {
-                    FireEvent(new _class.Init);
-                } catch(e) {
-                    console.error(e.stack ? e.message : e, e.stack ? e.stack : 'no stack provided');
-                }
+                FireEvent(new _class.Init);
             }
             if( Object.defineProperty && Object.getOwnPropertyDescriptor(_class, '__inited__') && Object.getOwnPropertyDescriptor(_class, '__inited__').writable !== false ) {
                 Object.defineProperty(_class, '__inited__', { value: true});
