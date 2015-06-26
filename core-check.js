@@ -25,22 +25,31 @@ check.instanceof = check._register('instanceof' , function(value) { return this.
 value instanceof this.value :
     (window[this.value] && value instanceof window[this.value])
 });
-check.hasFields  = check._register('hasFields'  , function(value) {
-    for(var i in this.value) {
-        if (typeof this.value[i] == 'object' && this.value[i] instanceof check) {
-            if(!this.value[i](value[i])) {
-                return false
+check.contain    = check._register('contain'    , function(value) {
+    var i;
+    if(value instanceof Array) {
+        for(i = 0; i < this.value.length; i++) {
+            if(value.indexOf(this.value[i]) === -1) {
+                return false;
             }
-        } else {
-            if(this.value[i] != value[i]) {
-                return false
+        }
+    } else {
+        for(i in this.value) {
+            if (typeof this.value[i] == 'object' && this.value[i] instanceof check) {
+                if(!this.value[i](value[i])) {
+                    return false
+                }
+            } else {
+                if(this.value[i] != value[i]) {
+                    return false
+                }
             }
         }
     }
     return true
 });
 check.eachMatch  = check._register('eachMatch'  , function(value) {
-    for(var i = 0; value.length; i++) {
+    for(var i = 0; i < value.length; i++) {
         if(!this.value(value[i])) {
             return false;
         }
