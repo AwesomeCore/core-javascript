@@ -8,7 +8,7 @@ This framework provide us with new principles of the design of the code. The mai
 Event is a complex object, that means that something has already happend.
 Request is a complex object, that means that something asks to perform its request.
 
-Other objects of the system can subscribe on Events and Requests. Subscription is a static process.
+Other objects of the system can subscribe to Events and Requests. Subscription is a static process.
 During initialization Core parses project and subscribes objects on Events and Requests.
 
 #Installing
