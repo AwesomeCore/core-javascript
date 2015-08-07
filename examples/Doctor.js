@@ -1,0 +1,5 @@
+//Core.registerEventPoint('');
+
+var Doctor = {
+
+};

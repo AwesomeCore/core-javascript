@@ -353,6 +353,8 @@ Core = {
         eventConstructor.options   = options;
 
         global[name] = eventConstructor;
+
+        return global[name];
     }
     , registerRequestPoint: function(name, options) {
 
@@ -373,6 +375,8 @@ Core = {
         this.registerEventPoint(name + '_Start'  , {log: false});
         this.registerEventPoint(name + '_Success', {log: !options || options.log});
         this.registerEventPoint(name + '_Fail'   , {log: !options || options.log});
+
+        return global[name];
     }
     , _namespaces: {}
     , getNamespace: function(namespace) {
@@ -386,7 +390,7 @@ Core = {
         return this._namespaces[namespace];
     }
     , processNamespace: function(namespace) {
-        for(var _classname in namespace) {
+        for( var _classname in namespace ) {
             var _class = namespace[_classname];
             if (typeof _class !== 'object' || !_class)
                 continue;
@@ -400,22 +404,31 @@ Core = {
                 if (_class[method] instanceof Function) {
                     if (events = _class[method].toString().replace(/\n/g,"").match(/(Core\.)?(CatchEvent|CatchRequest)\(([^\)]+)\)/m)) {
                         events = events[3].replace(/^[ \t]*|[ \t]*$/g,"").split(/[ \t\n\r]*,[ \t\n\r]*/);
-                        for(var i in events) {
-                            try {
-                                var parts = events[i].split('.');
-                                var cursor = global;
-                                for(var n in parts) {
-                                    cursor = cursor[parts[n]];
-                                }
-                                cursor.listeners.push([_class, method]);
+                        for( var i in events ) {
+                            var
+                                  parts  = events[i].split('.')
+                                , cursor = global;
 
+                            for( var n in parts ) {
+                                cursor = cursor[parts[n]];
+                            }
+
+                            if( !cursor ) {
+                                console.warn('Cannot parse ' + events[i] + ' in [namespace].' + _classname + '.' + method);
+                                console.warn('Creating new one...');
                                 if( _class[method].toString().indexOf('CatchEvent') > -1 ) {
-                                    cursor._event   = events[i];
+                                    cursor = this.registerEventPoint(events[i]);
                                 } else if( _class[method].toString().indexOf('CatchRequest') > -1 ) {
-                                    cursor._request = events[i];
+                                    cursor = this.registerRequestPoint(events[i]);
                                 }
-                            } catch(e) {
-                                console.error('cannot parse ' + events[i] + ' in CatchEvent in [namespace].' + _classname + '.' + method, e.stack ? e.message : e, e.stack ? e.stack : 'no stack provided');
+                            }
+
+                            cursor.listeners.push([_class, method]);
+
+                            if( _class[method].toString().indexOf('CatchEvent') > -1 ) {
+                                cursor._event   = events[i];
+                            } else if( _class[method].toString().indexOf('CatchRequest') > -1 ) {
+                                cursor._request = events[i];
                             }
                         }
                     }
@@ -449,21 +462,30 @@ Core = {
                 if( events = _class[method].toString().replace(/\n/g,"").match(/(Core\.)?(CatchEvent|CatchRequest)\(([^\)]+)\)/m) ) {
                     events = events[3].replace(/^[ \t\n\r]*|[ \t\n\r]*$/mg,"").split(/[ \t\n\r]*,[ \t\n\r]*/);
                     for( var i in events ) {
-                        try {
-                            var parts = events[i].split('.');
-                            var cursor = global;
-                            for(var n in parts) {
-                                cursor = cursor[parts[n]];
-                            }
-                            cursor.listeners.push([_class, method]);
+                        var
+                              parts  = events[i].split('.')
+                            , cursor = global;
 
+                        for( var n in parts ) {
+                            cursor = cursor[parts[n]];
+                        }
+
+                        if( !cursor ) {
+                            console.warn('Cannot parse ' + events[i] + ' in CatchEvent in ' + method);
+                            console.warn('Creating new one...');
                             if( _class[method].toString().indexOf('CatchEvent') > -1 ) {
-                                cursor._event   = events[i];
+                                cursor = this.registerEventPoint(events[i]);
                             } else if( _class[method].toString().indexOf('CatchRequest') > -1 ) {
-                                cursor._request = events[i];
+                                cursor = this.registerRequestPoint(events[i]);
                             }
-                        } catch(e) {
-                            console.error('cannot parse ' + events[i] + ' in [namespace].' + '.' + method, e.stack ? e.message : e, e.stack ? e.stack : 'no stack provided');
+                        }
+
+                        cursor.listeners.push([_class, method]);
+
+                        if( _class[method].toString().indexOf('CatchEvent') > -1 ) {
+                            cursor._event   = events[i];
+                        } else if( _class[method].toString().indexOf('CatchRequest') > -1 ) {
+                            cursor._request = events[i];
                         }
                     }
                 }
