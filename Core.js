@@ -572,15 +572,15 @@ Core.RequestPoint.prototype.addHandler = function addHandler(handler) {
 if(typeof window != 'undefined') {
 
     /** @name DOM_Init */
-    Core.registerEventPoint('DOM_Init');
+    Core.registerEventPoint('DOM_Init'     , {log: false});
     /** @name DOM_Unload */
-    Core.registerEventPoint('DOM_Unload');
+    Core.registerEventPoint('DOM_Unload'   , {log: false});
     /** @name DOM_Changed */
-    Core.registerEventPoint('DOM_Changed');
+    Core.registerEventPoint('DOM_Changed'  , {log: false});
     /** @name Window_Scroll */
-    Core.registerEventPoint('Window_Scroll');
+    Core.registerEventPoint('Window_Scroll', {log: false});
     /** @name Window_Resize */
-    Core.registerEventPoint('Window_Resize');
+    Core.registerEventPoint('Window_Resize', {log: false});
 
     Event_DOM_Init      = DOM_Init     ;
     Event_DOM_Unload    = DOM_Unload   ;
