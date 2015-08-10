@@ -152,9 +152,9 @@ Core = {
 
             Core.__event_stack.shift();
         }
-        if(!event.constructor.options || event.constructor.options.log !== false) {
-            this.log.push(methods);
-        }
+        //if(!event.constructor.options || event.constructor.options.log !== false) {
+        //    this.log.push(methods);
+        //}
 
         this._contexts.shift(context)
     }
@@ -247,9 +247,9 @@ Core = {
             Core.__event_stack.shift();
         }
 
-        if(!request.constructor.options || request.constructor.options.log !== false) {
-            this.log.push(methods);
-        }
+        //if(!request.constructor.options || request.constructor.options.log !== false) {
+        //    this.log.push(methods);
+        //}
 
         this._contexts.shift(context);
 
@@ -299,9 +299,9 @@ Core = {
             run_handler(0)
         }
 
-        if(!request.constructor.options || request.constructor.options.log !== false) {
-            Core.log.push(request._handlers_results);
-        }
+        //if(!request.constructor.options || request.constructor.options.log !== false) {
+        //    Core.log.push(request._handlers_results);
+        //}
     }
     , contextMatches: function checkRecursive(context, pattern) {
         for( var i in pattern ) {
