@@ -124,8 +124,8 @@ Core = {
         //event.__proto__ = {__proto__: event.__proto__, stack: Core.getStack()};
 
         if(event instanceof Function) {
-            console.log(event);
-            throw new Error('Trying to fire not object, but Function');
+            console.warn('Trying to fire not object, but Function', event);
+            event = new event;
         }
 
         this._contexts.unshift(context);
@@ -207,8 +207,8 @@ Core = {
         //request.__proto__ = {__proto__: request.__proto__, stack: Core.getStack()};
 
         if(request instanceof Function) {
-            console.log(request);
-            throw new Error('Trying to fire not object, but Function');
+            console.warn('Trying to fire not object, but Function', request);
+            request = new request
         }
 
         this._contexts.unshift(context);
