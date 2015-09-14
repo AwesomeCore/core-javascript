@@ -72,6 +72,25 @@ Core = {
     , DisableEventsTracking: function() {
         this._eventsTracking = false;
     }
+    , __check_classes: []
+    , Class: function(o) {
+        if(!Core.__check_classes.length) {
+            setImmediate(function() {
+                var ns = [global.classes, global], to_check = Core.__check_classes.splice(0);
+                for(var i = 0 ; i < to_check.length; i++) {
+                    for(var j = 0; j < ns.length; j++) {
+                        for(var _ in ns[j]) {
+                            if(ns[j].hasOwnProperty(_) && (ns[j] == global ? _.match(/^[A-Z]/) : true) && ns[j][_] == to_check[i]) {
+                                Core.processObject(to_check[i]);
+                            }
+                        }
+                    }
+                }
+            })
+        }
+        Core.__check_classes.push(o);
+        return o;
+    }
     , EventPoint: function() {
             function event(data) {
                 if (arguments.length > 1) {
@@ -124,7 +143,7 @@ Core = {
         //event.__proto__ = {__proto__: event.__proto__, stack: Core.getStack()};
 
         if(event instanceof Function) {
-            console.warn('Trying to fire not object, but Function', event);
+            //console.warn(new Error('Warning: Trying to fire not object, but Function'));
             event = new event;
         }
 
@@ -207,7 +226,7 @@ Core = {
         //request.__proto__ = {__proto__: request.__proto__, stack: Core.getStack()};
 
         if(request instanceof Function) {
-            console.warn('Trying to fire not object, but Function', request);
+            //console.warn(new Error('Warning: Trying to fire not object, but Function'));
             request = new request
         }
 
@@ -252,6 +271,24 @@ Core = {
         //}
 
         this._contexts.shift(context);
+
+        if(request.constructor.options && request.constructor.options.type == 'multi') {
+            var res = [], wait = [];
+            function removeWaitAndCheckEnd(i) {
+                if(wait.indexOf(i) !== -1){
+                    wait.splice(wait.indexOf(i),1)
+                }
+                if(wait.length == 0) {
+                    FireEvent(new global[request._request + '_Success'](res));
+                    cb(res);
+                }
+            }
+            request._handlers.map(function(handler, i){
+                wait.push(i);
+                handler[1](function(data){ removeWaitAndCheckEnd(i); res[i] = data }, function(){removeWaitAndCheckEnd(i)})
+            });
+            return;
+        }
 
         function run_handler(i) {
             var handler = request._handlers[i];
@@ -555,6 +592,18 @@ Core = {
     }
     , processGlobal: function() {
         CatchEvent(DOM_Init);
+
+        var ns = [global.classes, global], to_check = Core.__check_classes.splice(0);
+        for(var i = 0 ; i < to_check.length; i++) {
+            for(var j = 0; j < ns.length; j++) {
+                for(var _ in ns[j]) {
+                    if(ns[j].hasOwnProperty(_) && (ns[j] == global ? _.match(/^[A-Z]/) : true) && ns[j][_] == to_check[i]) {
+                        Core.processObject(to_check[i]);
+                    }
+                }
+            }
+        }
+
         for(var i in window) {
             if(i.match(/^[A-Z]/) && window.hasOwnProperty(i)) {
                 //if(i instanceof Core.RequestPoint) {
@@ -672,3 +721,4 @@ FireRequest  = function(){ return Core.FireRequest .apply(Core, arguments); };
 FireEvent    = function(){ return Core.FireEvent   .apply(Core, arguments); };
 EventPoint   = Core.EventPoint;
 
+classes = {}
