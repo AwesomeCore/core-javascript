@@ -283,8 +283,10 @@ Core = {
                     cb(res);
                 }
             }
-            request._handlers.map(function(handler, i){
+            request._handlers.map(function(handler, i) {
                 wait.push(i);
+            });
+            request._handlers.map(function(handler, i) {
                 handler[1](function(data){ removeWaitAndCheckEnd(i); res[i] = data }, function(){removeWaitAndCheckEnd(i)})
             });
             return;
@@ -375,6 +377,7 @@ Core = {
         if(global[name] instanceof Core.EventPoint) return;
 
         eval('var eventConstructor = function ' + name + '(data) { \n' +
+        '   if(!(this instanceof ' + name + ')) return new ' + name + '(data) \n' +
         '   Core._clone(data, this); \n' +
         '   this._event = ' + name + '._event; \n' +
         '}');
@@ -393,6 +396,7 @@ Core = {
         if(global[name] instanceof Core.RequestPoint) return;
 
         eval('var requestConstructor = function ' + name + '(data) { \n' +
+        '   if(!(this instanceof ' + name + ')) return new ' + name + '(data) \n' +
         '   Core._clone(data, this); \n' +
         '   this._request = ' + name + '._request; \n' +
         '   this.__proto__ = {__proto__: this.__proto__, _handlers: [], _handlers_results: [], _cb: null, _fail_cb: null, _started: false, _handled: false} \n' +
