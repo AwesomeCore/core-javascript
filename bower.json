@@ -1,0 +1,25 @@
+{
+  "name": "core-os",
+  "version": "0.1.0",
+  "homepage": "https://github.com/AwesomeCore/core-javascript",
+  "authors": [
+    "(Oleg Sergienko <okneigres@gmail.com>)"
+  ],
+  "description": "Awesome event oriented javascript framework",
+  "main": "Core.js",
+  "keywords": [
+    "event",
+    "context",
+    "request",
+    "context-oriented",
+    "programming"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
