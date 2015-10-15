@@ -490,7 +490,7 @@ Core = {
             if( _class[method] instanceof Function ) {
                 if( events = _class[method].toString().replace(/\n/g,"").match(/(Core\.)?(CatchEvent|CatchRequest)\(([^\)]+)\)/m) ) {
                     events = events[3].replace(/^[ \t\n\r]*|[ \t\n\r]*$/mg,"").split(/[ \t\n\r]*,[ \t\n\r]*/);
-                    for( var i in events ) {
+                    for( var i = 0; i < events.length; i++ ) {
                         var
                               parts  = events[i].split('.')
                             , cursor = global;
