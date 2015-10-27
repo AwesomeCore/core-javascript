@@ -5,4 +5,4 @@ cd /root/$PROJECT
 
 git checkout $REV
 
-node examples/tfests.js
+node examples/tests.js
