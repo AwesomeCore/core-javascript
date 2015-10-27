@@ -1,7 +1,0 @@
-Core.code(function() {
-
-  $VkFetcher = {
-
-  }
-
-});
