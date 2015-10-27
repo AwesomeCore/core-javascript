@@ -15,5 +15,6 @@ Core = {
         var matches = cb.toString().match(/(rq|requests|ev|events|cl|classes)\.[a-zA-Z.0-9$_]+/g);
 
         console.log(matches);
+        
     }
 };
