@@ -50,7 +50,7 @@ if(!window.setImmediate) {
 }
 
 Core = {
-      __event_stack: []
+    __event_stack: []
     , _eventsTracking: 0
     , _eventsTrackingObjects: []
     , log: (function() {
@@ -92,24 +92,24 @@ Core = {
         return o;
     }
     , EventPoint: function() {
-            function event(data) {
-                if (arguments.length > 1) {
-                    console.error('we does not support events with big number of arguments. only 1 or nothing.');
-                }
-                if (data) {
-                    for (var i in data) {
-                        this[i] = data[i];
-                    }
-                }
-                if (Core._eventsTracking) {
-                    console.log(event._event, data)
-                }
-                this._event = event._event;
+        function event(data) {
+            if (arguments.length > 1) {
+                console.error('we does not support events with big number of arguments. only 1 or nothing.');
             }
-
-            event.listeners = [];
-            return event;
+            if (data) {
+                for (var i in data) {
+                    this[i] = data[i];
+                }
+            }
+            if (Core._eventsTracking) {
+                console.log(event._event, data)
+            }
+            this._event = event._event;
         }
+
+        event.listeners = [];
+        return event;
+    }
     , RequestPoint: function() {
         function request(data, cb, fail_cb) {
             var i;
@@ -253,7 +253,7 @@ Core = {
         var methods = [];
 
         var listeners = request.constructor.listeners;
-        for(var i in listeners) {
+        for(var i = 0 ; i < listeners.length; i++) {
             Core.__event_stack.unshift(_this);
             try {
                 var handler = listeners[i][0][listeners[i][1]](listeners[i][2]);
@@ -375,9 +375,9 @@ Core = {
         if(global[name] instanceof Core.EventPoint) return;
 
         eval('var eventConstructor = function ' + name + '(data) { \n' +
-        '   Core._clone(data, this); \n' +
-        '   this._event = ' + name + '._event; \n' +
-        '}');
+            '   Core._clone(data, this); \n' +
+            '   this._event = ' + name + '._event; \n' +
+            '}');
 
         eventConstructor.prototype = {__proto__: options && options.parent || Core.EventPoint.prototype, constructor: eventConstructor};
         eventConstructor.listeners = [];
@@ -393,10 +393,10 @@ Core = {
         if(global[name] instanceof Core.RequestPoint) return;
 
         eval('var requestConstructor = function ' + name + '(data) { \n' +
-        '   Core._clone(data, this); \n' +
-        '   this._request = ' + name + '._request; \n' +
-        '   this.__proto__ = {__proto__: this.__proto__, _handlers: [], _handlers_results: [], _cb: null, _fail_cb: null, _started: false, _handled: false} \n' +
-        '}');
+            '   Core._clone(data, this); \n' +
+            '   this._request = ' + name + '._request; \n' +
+            '   this.__proto__ = {__proto__: this.__proto__, _handlers: [], _handlers_results: [], _cb: null, _fail_cb: null, _started: false, _handled: false} \n' +
+            '}');
 
         requestConstructor.prototype = {__proto__: options && options.parent || Core.RequestPoint.prototype, constructor: requestConstructor};
         requestConstructor._request  = name;
@@ -437,12 +437,12 @@ Core = {
                 if (_class[method] instanceof Function) {
                     if (events = _class[method].toString().replace(/\n/g,"").match(/(Core\.)?(CatchEvent|CatchRequest)\(([^\)]+)\)/m)) {
                         events = events[3].replace(/^[ \t]*|[ \t]*$/g,"").split(/[ \t\n\r]*,[ \t\n\r]*/);
-                        for( var i in events ) {
+                        for( var i = 0; i < events.length; i++ ) {
                             var
-                                  parts  = events[i].split('.')
+                                parts  = events[i].split('.')
                                 , cursor = global;
 
-                            for( var n in parts ) {
+                            for( var n = 0; n < parts.length; n++ ) {
                                 cursor = cursor[parts[n]];
                             }
 
@@ -480,7 +480,7 @@ Core = {
     , processObject: function(object) {
         var _class = object;
 
-        if( _class.__inited__ )
+        if( _class.hasOwnProperty('__inited__') && _class.__inited__ )
             return;
         if( _class.__init instanceof Function ) {
             _class.__init();
@@ -492,10 +492,10 @@ Core = {
                     events = events[3].replace(/^[ \t\n\r]*|[ \t\n\r]*$/mg,"").split(/[ \t\n\r]*,[ \t\n\r]*/);
                     for( var i = 0; i < events.length; i++ ) {
                         var
-                              parts  = events[i].split('.')
+                            parts  = events[i].split('.')
                             , cursor = global;
 
-                        for( var n in parts ) {
+                        for( var n = 0; n < parts.length; n++) {
                             cursor = cursor[parts[n]];
                         }
 
