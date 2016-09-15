@@ -19,7 +19,7 @@ try {
 // Only add setZeroTimeout to the window object, and hide everything
 // else in a closure.
 
-if(!window.setImmediate) {
+if(typeof setImmediate =='undefined') {
     (function () {
         var timeouts = [];
         var messageName = "zero-timeout-message";
