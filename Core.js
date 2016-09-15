@@ -434,7 +434,11 @@ Core = {
             if (_class.hasOwnProperty('__inited__'))
                 continue;
             if (_class.__init instanceof Function) {
-                _class.__init();
+                (function(_class) {
+                    setImmediate(function() {
+                        _class.__init();
+                    })
+                })(_class);
             }
             for(var method in _class) {
                 var events;
@@ -487,7 +491,9 @@ Core = {
         if( _class.hasOwnProperty('__inited__') && _class.__inited__ )
             return;
         if( _class.__init instanceof Function ) {
-            _class.__init();
+            setImmediate(function() {
+                _class.__init();
+            })
         }
         for( var method in _class ) {
             var events;
