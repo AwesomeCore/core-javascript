@@ -1,6 +1,6 @@
 {
   "name": "core-os",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Awesome event oriented javascript framework",
   "main": "Core.js",
   "directories": {
